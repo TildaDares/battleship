@@ -1,0 +1,70 @@
+.main {
+  margin: 0 50px 0 50px;
+}
+
+.title {
+  text-align: center;
+  width: 100%;
+  color: green;
+}
+
+.grid-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 30px;
+}
+
+.grid-container p {
+  text-align: center;
+  font-size: 1.3rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.grids {
+  width: fit-content;
+  display: grid;
+  gap: 0.1rem;
+  grid-template-rows: repeat(10, minmax(0, 20px));
+  grid-template-columns: repeat(10, minmax(0, 20px));
+  border: 1px solid #9ae6b4;
+}
+
+.grids .square {
+  border: 1px solid #9ae6b4;
+}
+
+.ship {
+  background-color: green;
+}
+
+.miss {
+  background-color: #fefcbf;
+}
+
+.hit {
+  background-color: red;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn {
+  padding: 15px;
+  font-size: 1.1rem;
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+@media (max-width: 556px) {
+  .grid-container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
