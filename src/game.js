@@ -22,6 +22,18 @@ const game = (() => {
     return "";
   };
 
+  const compAttack = () => {
+    const isAHit = comp.attack(human);
+    const shotCoord = [...human.board.shotCoords].slice(-1);
+    const grid = document.querySelector("#hum" + shotCoord);
+    if (isAHit) {
+      grid.classList.add("hit");
+      isWinner(true, human);
+    } else {
+      grid.classList.add("miss");
+    }
+  };
+
   const onHumanAttack = (event) => {
     const compShotCoords = comp.board.shotCoords.size;
     const stringCoord = event.target.id.slice(event.target.id.length - 2);
