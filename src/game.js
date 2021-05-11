@@ -22,6 +22,15 @@ const game = (() => {
     return "";
   };
 
+  const isWinner = (isComp, opponent) => {
+    if (opponent.board.allShipsSunk()) {
+      let resultsPar = document.querySelector(".results");
+      const name = isComp ? "Computer " : "You ";
+      resultsPar.innerText = name + "win" + (isComp ? "s" : "") + "! 🎉";
+      document.querySelector("#comp-container").style.display = "none";
+    }
+  };
+
   const compAttack = () => {
     const isAHit = comp.attack(human);
     const shotCoord = [...human.board.shotCoords].slice(-1);
