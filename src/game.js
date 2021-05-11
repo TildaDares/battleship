@@ -1,4 +1,3 @@
-import { element } from "prop-types";
 import Player from "./player";
 
 const game = (() => {
@@ -18,7 +17,22 @@ const game = (() => {
         shipCoords.push(coord.join(""));
       });
     }
+
     return shipCoords;
+  };
+
+  const getAttackedShip = (player, coord) => {
+    const ships = player.board.ships;
+    for (const name in ships) {
+      let coordsToString = JSON.stringify(coord);
+      let includesCoord = ships[name].coords.some(
+        (item) => JSON.stringify(item) === coordsToString
+      );
+
+      if (includesCoord) {
+        return ships[name];
+      }
+    }
   };
 
   const placeShipsOnGrid = (allShipCoords, coord) => {
@@ -26,6 +40,43 @@ const game = (() => {
       return "ship";
     }
     return "";
+  };
+
+  const disableGrid = (elem) => {
+    elem.removeEventListener("click", onHumanAttack);
+    elem.classList.add("disabled");
+  };
+
+  const returnOuterGridElem = (ship) => {
+    const top = ship.top.join("");
+    const bottom = ship.bottom.join("");
+    let elemTop;
+    let elemBottom;
+    if (ship.orientation === "vertical") {
+      let topCoord = Number(top[0]) - 1;
+      let bottomCoord = Number(bottom[0]) + 1;
+      elemTop = document.querySelector("#comp" + topCoord + top[1]);
+      elemBottom = document.querySelector("#comp" + bottomCoord + bottom[1]);
+    } else {
+      let topCoord = Number(top[1]) - 1;
+      let bottomCoord = Number(bottom[1]) + 1;
+      elemTop = document.querySelector("#comp" + top[0] + topCoord);
+      elemBottom = document.querySelector("#comp" + bottom[0] + bottomCoord);
+    }
+    return { elemTop, elemBottom };
+  };
+
+  const markOuterSquares = (player, squareCoord) => {
+    const ship = getAttackedShip(player, squareCoord);
+    if (ship.object.isSunk()) {
+      const { elemTop, elemBottom } = returnOuterGridElem(ship);
+      if (elemTop) {
+        disableGrid(elemTop);
+      }
+      if (elemBottom) {
+        disableGrid(elemBottom);
+      }
+    }
   };
 
   const markAdjacentSquares = (squareId) => {
@@ -38,8 +89,7 @@ const game = (() => {
       let yCoord = coord[1] + col[i];
       const elem = document.querySelector("#comp" + xCoord + yCoord);
       if (elem) {
-        elem.removeEventListener("click", onHumanAttack);
-        elem.classList.add("disabled");
+        disableGrid(elem);
       }
     }
   };
@@ -48,7 +98,7 @@ const game = (() => {
     human = Player(false);
     comp = Player(true);
     let resultsPar = document.querySelector(".results");
-    resultsPar.innerText = "Your grid";
+    resultsPar.textContent = "Your grid";
     document.querySelector("#comp-container").style.display = "block";
     document.querySelector(".btn-container").style.display = "none";
     document.querySelector(".human-grid").innerHTML = "";
@@ -61,7 +111,7 @@ const game = (() => {
     if (opponent.board.allShipsSunk()) {
       let resultsPar = document.querySelector(".results");
       const name = isComp ? "Computer " : "You ";
-      resultsPar.innerText = name + "win" + (isComp ? "s" : "") + "! 🎉";
+      resultsPar.textContent = name + "win" + (isComp ? "s" : "") + "! 🎉";
       document.querySelector("#comp-container").style.display = "none";
       document.querySelector(".btn-container").style.display = "flex";
       document.querySelector(".restart-btn").addEventListener("click", restart);
@@ -87,6 +137,7 @@ const game = (() => {
     if (human.attack(comp, coord)) {
       event.target.classList.add("hit");
       markAdjacentSquares(stringCoord);
+      markOuterSquares(comp, coord);
       isWinner(false, comp);
     } else {
       event.target.classList.add("miss");
