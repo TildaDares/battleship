@@ -34,7 +34,22 @@ const game = (() => {
       humanGridContainer.appendChild(div);
     }
   };
-  return { generateHumanGrid };
+
+  const generateCompGrid = () => {
+    const compGridContainer = document.querySelector(".comp-grid");
+    const allShips = shipCoords(comp);
+    const grids = [];
+    for (let i = 0; i < 100; i++) {
+      const uniqId = "comp" + i.toString().padStart(2, 0);
+      let div = document.createElement("div");
+      div.classList = "square ";
+      div.setAttribute("id", uniqId);
+      // div.addEventListener("click", onHumanAttack);
+      compGridContainer.appendChild(div);
+    }
+    return grids;
+  };
+  return { generateHumanGrid, generateCompGrid };
 })();
 
 export default game;
