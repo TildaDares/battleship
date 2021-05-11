@@ -162,7 +162,6 @@ const game = (() => {
 
   const generateCompGrid = () => {
     const compGridContainer = document.querySelector(".comp-grid");
-    const allShips = shipCoords(comp);
     const grids = [];
     for (let i = 0; i < 100; i++) {
       const uniqId = "comp" + i.toString().padStart(2, 0);
