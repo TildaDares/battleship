@@ -4,6 +4,11 @@ const game = (() => {
   let human = Player(false);
   let comp = Player(true);
 
+  const init = () => {
+    generateHumanGrid();
+    generateCompGrid();
+  };
+
   const shipCoords = (player) => {
     const ships = player.board.ships;
     const shipCoords = [];
@@ -22,12 +27,27 @@ const game = (() => {
     return "";
   };
 
+  const restart = (event) => {
+    human = Player(false);
+    comp = Player(true);
+    let resultsPar = document.querySelector(".results");
+    resultsPar.innerText = "Your grid";
+    document.querySelector("#comp-container").style.display = "block";
+    document.querySelector(".btn-container").style.display = "none";
+    document.querySelector(".human-grid").innerHTML = "";
+    document.querySelector(".comp-grid").innerHTML = "";
+    init();
+    event.target.removeEventListener("click", restart);
+  };
+
   const isWinner = (isComp, opponent) => {
     if (opponent.board.allShipsSunk()) {
       let resultsPar = document.querySelector(".results");
       const name = isComp ? "Computer " : "You ";
       resultsPar.innerText = name + "win" + (isComp ? "s" : "") + "! 🎉";
       document.querySelector("#comp-container").style.display = "none";
+      document.querySelector(".btn-container").style.display = "flex";
+      document.querySelector(".restart-btn").addEventListener("click", restart);
     }
   };
 
@@ -87,7 +107,7 @@ const game = (() => {
     return grids;
   };
 
-  return { generateHumanGrid, generateCompGrid };
+  return { init };
 })();
 
 export default game;
