@@ -36,7 +36,7 @@ const GameBoard = () => {
       return false;
     }
 
-    createShip(directions, length);
+    createShip(directions, length, orientation);
     addMargin(directions, orientation);
     return true;
   };
@@ -82,11 +82,14 @@ const GameBoard = () => {
     });
   };
 
-  const createShip = (coord, length) => {
+  const createShip = (coord, length, orientation) => {
     let newShip = "ship" + (Object.keys(ships).length + 1);
     ships[newShip] = {
       object: Ship(length),
+      orientation: orientation,
       coords: coord,
+      top: coord[0],
+      bottom: coord[coord.length - 1],
     };
   };
 
