@@ -1,6 +1,6 @@
 import Player from "./player";
 
-const Game = (() => {
+const game = (() => {
   let human = Player(false);
   let comp = Player(true);
 
@@ -22,21 +22,19 @@ const Game = (() => {
     return "";
   };
 
-  // const generateHumanGrid = () => {
-  //   const humanGridContainer = document.querySelector(".human-grid");
-  //   const allShips = shipCoords(human);
-  //   for (let i = 0; i < 100; i++) {
-  //     const stringCoord = i.toString().padStart(2, 0);
-  //     const uniqId = "hum" + stringCoord;
-  //     let div = document.createElement('div');
-  //     div.classList = 'square '
-  //     grids.push(
-  //       <div
-  //         className={"square " + placeShipsOnGrid(allShips, stringCoord)}
-  //         key={uniqId}
-  //         id={uniqId}
-  //       ></div>
-  //     );
-  //   }
-  // };
+  const generateHumanGrid = () => {
+    const humanGridContainer = document.querySelector(".human-grid");
+    const allShips = shipCoords(human);
+    for (let i = 0; i < 100; i++) {
+      const stringCoord = i.toString().padStart(2, 0);
+      const uniqId = "hum" + stringCoord;
+      let div = document.createElement("div");
+      div.classList = "square " + placeShipsOnGrid(allShips, stringCoord);
+      div.setAttribute("id", uniqId);
+      humanGridContainer.appendChild(div);
+    }
+  };
+  return { generateHumanGrid };
 })();
+
+export default game;
