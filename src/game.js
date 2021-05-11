@@ -1,3 +1,4 @@
+import { element } from "prop-types";
 import Player from "./player";
 
 const game = (() => {
@@ -25,6 +26,22 @@ const game = (() => {
       return "ship";
     }
     return "";
+  };
+
+  const markAdjacentSquares = (squareId) => {
+    const coord = [Number(squareId[0]), Number(squareId[1])];
+    const row = [-1, +1, -1, +1];
+    const col = [-1, +1, +1, -1];
+
+    for (let i = 0; i < 4; i++) {
+      let xCoord = coord[0] + row[i];
+      let yCoord = coord[1] + col[i];
+      const elem = document.querySelector("#comp" + xCoord + yCoord);
+      if (elem) {
+        elem.removeEventListener("click", onHumanAttack);
+        elem.classList.add("disabled");
+      }
+    }
   };
 
   const restart = (event) => {
@@ -69,6 +86,7 @@ const game = (() => {
     const coord = [Number(stringCoord[0]), Number(stringCoord[1])];
     if (human.attack(comp, coord)) {
       event.target.classList.add("hit");
+      markAdjacentSquares(stringCoord);
       isWinner(false, comp);
     } else {
       event.target.classList.add("miss");
@@ -97,11 +115,11 @@ const game = (() => {
     const grids = [];
     for (let i = 0; i < 100; i++) {
       const uniqId = "comp" + i.toString().padStart(2, 0);
-      let div = document.createElement("div");
-      div.classList = "square ";
-      div.setAttribute("id", uniqId);
-      div.addEventListener("click", onHumanAttack);
-      compGridContainer.appendChild(div);
+      let button = document.createElement("button");
+      button.classList = "square ";
+      button.setAttribute("id", uniqId);
+      button.addEventListener("click", onHumanAttack);
+      compGridContainer.appendChild(button);
     }
 
     return grids;
