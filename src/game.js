@@ -47,7 +47,7 @@ const game = (() => {
     elem.classList.add("disabled");
   };
 
-  const returnOuterGridElem = (ship) => {
+  const getOuterGridElem = (ship) => {
     const top = ship.top.join("");
     const bottom = ship.bottom.join("");
     let elemTop;
@@ -69,7 +69,7 @@ const game = (() => {
   const markOuterSquares = (player, squareCoord) => {
     const ship = getAttackedShip(player, squareCoord);
     if (ship.object.isSunk()) {
-      const { elemTop, elemBottom } = returnOuterGridElem(ship);
+      const { elemTop, elemBottom } = getOuterGridElem(ship);
       if (elemTop) {
         disableGrid(elemTop);
       }
