@@ -22,6 +22,21 @@ const game = (() => {
     return "";
   };
 
+  const onHumanAttack = (event) => {
+    const compShotCoords = comp.board.shotCoords.size;
+    const stringCoord = event.target.id.slice(event.target.id.length - 2);
+    const coord = [Number(stringCoord[0]), Number(stringCoord[1])];
+    if (human.attack(comp, coord)) {
+      event.target.classList.add("hit");
+      isWinner(false, comp);
+    } else {
+      event.target.classList.add("miss");
+    }
+    if (comp.board.shotCoords.size === compShotCoords + 1) {
+      compAttack();
+    }
+  };
+
   const generateHumanGrid = () => {
     const humanGridContainer = document.querySelector(".human-grid");
     const allShips = shipCoords(human);
@@ -44,11 +59,13 @@ const game = (() => {
       let div = document.createElement("div");
       div.classList = "square ";
       div.setAttribute("id", uniqId);
-      // div.addEventListener("click", onHumanAttack);
+      div.addEventListener("click", onHumanAttack);
       compGridContainer.appendChild(div);
     }
+
     return grids;
   };
+
   return { generateHumanGrid, generateCompGrid };
 })();
 
