@@ -119,7 +119,8 @@ const GameBoard = () => {
     }
   };
 
-  const addMarginToEmptySides = (array, orientation) => {
+  //Useful for ships that have a length of 1 only
+  /** const addMarginToEmptySides = (array, orientation) => {
     const adj = [+1, -1];
 
     if (orientation === "horizontal") {
@@ -135,12 +136,11 @@ const GameBoard = () => {
         }
       }
     }
-  };
+  }; */
 
   const addMargin = (shipCoords, orientation) => {
     shipCoords.forEach((array) => {
       boardArray[array[0]][array[1]] = 1;
-      addMarginToEmptySides(array, orientation);
       addMarginToAdjacentCoords(array);
     });
 
