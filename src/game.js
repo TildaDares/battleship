@@ -1,8 +1,11 @@
 import Player from "./player";
+import ComputerAI from "./computerAI";
 
 const game = (() => {
   let human = Player(false);
-  let comp = Player(true);
+  let comp = ComputerAI();
+  let compLastMove;
+  let humanLastMove;
 
   const init = () => {
     generateHumanGrid();
@@ -119,15 +122,22 @@ const game = (() => {
   };
 
   const compAttack = () => {
-    const isAHit = comp.attack(human);
+    const isHit = comp.aiAttack(human);
+    console.log(isHit);
     const shotCoord = [...human.board.shotCoords].slice(-1);
     const grid = document.querySelector("#hum" + shotCoord);
-    if (isAHit) {
+    if (isHit) {
       grid.classList.add("hit");
       isWinner(true, human);
     } else {
       grid.classList.add("miss");
     }
+
+    if (compLastMove) {
+      compLastMove.classList.remove("active");
+    }
+    grid.classList.add("active");
+    compLastMove = grid;
   };
 
   const onHumanAttack = (event) => {
@@ -142,9 +152,16 @@ const game = (() => {
     } else {
       event.target.classList.add("miss");
     }
+
     if (comp.board.shotCoords.size === compShotCoords + 1) {
+      event.target.classList.add("active");
       compAttack();
     }
+
+    if (humanLastMove) {
+      humanLastMove.classList.remove("active");
+    }
+    humanLastMove = event.target;
   };
 
   const generateHumanGrid = () => {
