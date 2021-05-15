@@ -21,7 +21,6 @@ const ComputerAI = () => {
         possibleTargets.unshift(target);
       }
     }
-    console.log(possibleTargets);
   };
 
   const getRandForComp = (opponent) => {
