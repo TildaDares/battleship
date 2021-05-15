@@ -123,7 +123,6 @@ const game = (() => {
 
   const compAttack = () => {
     const isHit = comp.aiAttack(human);
-    console.log(isHit);
     const shotCoord = [...human.board.shotCoords].slice(-1);
     const grid = document.querySelector("#hum" + shotCoord);
     if (isHit) {
