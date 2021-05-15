@@ -4,7 +4,7 @@ const Player = (isComp) => {
   board.placeShipsRandomly();
   const attack = (opponent, coords) => {
     if (isComp) {
-      return compAttack(opponent);
+      return opponent.board.receiveAttack(coords);
     } else {
       return humanAttack(opponent, coords);
     }
@@ -15,21 +15,6 @@ const Player = (isComp) => {
       return false;
     }
     return opponent.board.receiveAttack(coords);
-  };
-
-  const compAttack = (opponent) => {
-    return opponent.board.receiveAttack(genRandForComp(opponent));
-  };
-
-  const genRandForComp = (opponent) => {
-    let randCoord;
-    do {
-      randCoord = [
-        Math.floor(Math.random() * 10),
-        Math.floor(Math.random() * 10),
-      ];
-    } while (opponent.board.shotCoords.has(randCoord.join("")));
-    return randCoord;
   };
 
   return { attack, board };
