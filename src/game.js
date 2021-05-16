@@ -12,8 +12,7 @@ const game = (() => {
     generateCompGrid();
     const turn = document.querySelector(".turn");
     setTimeout(() => {
-      turn.style.transition = "0.8s";
-      turn.style.opacity = 0;
+      turn.style.display = "none";
     }, 3000);
   };
 
@@ -109,6 +108,7 @@ const game = (() => {
     resultsPar.textContent = "Your grid";
     document.querySelector("#comp-container").style.display = "block";
     document.querySelector(".btn-container").style.display = "none";
+    document.querySelector(".turn").style.display = "block";
     document.querySelector(".human-grid").innerHTML = "";
     document.querySelector(".comp-grid").innerHTML = "";
     init();
