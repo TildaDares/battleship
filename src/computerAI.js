@@ -4,6 +4,8 @@ const ComputerAI = () => {
   const comp = Player(true);
   let possibleTargets = [];
   const shipMargins = [];
+  let hits = [];
+  let orientation = "none";
   let board = comp.board;
 
   const inRange = (coord) => {
@@ -11,10 +13,21 @@ const ComputerAI = () => {
   };
 
   const addPossibleTargets = (coord, opponent) => {
-    const row = [-1, 0, +1, 0];
-    const col = [0, +1, 0, -1];
+    let row = [-1, +1];
+    let col = [0, 0];
 
-    for (let i = 0; i < 4; i++) {
+    if (orientation === "none") {
+      row = [-1, 0, +1, 0];
+      col = [0, +1, 0, -1];
+    }
+
+    if (orientation === "horizontal") {
+      let temp = row;
+      row = col;
+      col = temp;
+    }
+
+    for (let i = 0; i < row.length; i++) {
       let target = [coord[0] + row[i], coord[1] + col[i]];
       if (inRange(target) && !opponent.board.shotCoords.has(target.join(""))) {
         possibleTargets.unshift(target);
@@ -79,6 +92,21 @@ const ComputerAI = () => {
   const enemyShipSunk = (ship) => {
     addMargin(ship);
     possibleTargets = [];
+    hits = [];
+    orientation = "none";
+  };
+
+  //compares the last two hits shot by the computer to determine the orientation of the ship
+  const getShipOrientation = () => {
+    for (let i = 0; i < 2; i++) {
+      if (hits[hits.length - 1][i] === hits[hits.length - 2][i]) {
+        possibleTargets = possibleTargets.filter(
+          (target) => target[i] === hits[hits.length - 1][i]
+        );
+
+        return i;
+      }
+    }
   };
 
   const aiAttack = (opponent) => {
@@ -88,6 +116,10 @@ const ComputerAI = () => {
         : getRandForComp(opponent);
     const isHit = comp.attack(opponent, coord);
     if (isHit) {
+      hits.push(coord);
+      if (orientation === "none" && hits.length > 1) {
+        orientation = getShipOrientation() === 0 ? "horizontal" : "vertical";
+      }
       addPossibleTargets(coord, opponent);
     }
 
