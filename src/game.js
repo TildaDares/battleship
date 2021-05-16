@@ -10,6 +10,11 @@ const game = (() => {
   const init = () => {
     generateHumanGrid();
     generateCompGrid();
+    const turn = document.querySelector(".turn");
+    setTimeout(() => {
+      turn.style.transition = "0.8s";
+      turn.style.opacity = 0;
+    }, 3000);
   };
 
   const shipCoords = (player) => {
@@ -46,7 +51,7 @@ const game = (() => {
   };
 
   const disableGrid = (elem) => {
-    elem.removeEventListener("click", onHumanAttack);
+    elem.removeEventListener("click", onHumanTurn);
     elem.classList.add("disabled");
   };
 
@@ -141,6 +146,14 @@ const game = (() => {
     }
     grid.classList.add("active");
     compLastMove = grid;
+    return isHit;
+  };
+
+  const onCompsTurn = () => {
+    let isHit;
+    do {
+      isHit = compAttack();
+    } while (isHit);
   };
 
   const onHumanShipSink = (squareCoord) => {
@@ -150,22 +163,19 @@ const game = (() => {
     }
   };
 
-  const onHumanAttack = (event) => {
-    const compShotCoords = comp.board.shotCoords.size;
+  const onHumanTurn = (event) => {
+    event.target.removeEventListener("click", onHumanTurn);
     const stringCoord = event.target.id.slice(event.target.id.length - 2);
     const coord = [Number(stringCoord[0]), Number(stringCoord[1])];
-    if (human.attack(comp, coord)) {
+    const isHit = human.attack(comp, coord);
+    if (isHit) {
       event.target.classList.add("hit");
       markAdjacentSquares(stringCoord);
       markOuterSquares(comp, coord);
       isWinner(false, comp);
     } else {
       event.target.classList.add("miss");
-    }
-
-    if (comp.board.shotCoords.size === compShotCoords + 1) {
-      event.target.classList.add("active");
-      compAttack();
+      onCompsTurn();
     }
 
     if (humanLastMove) {
@@ -195,7 +205,7 @@ const game = (() => {
       let button = document.createElement("button");
       button.classList = "square ";
       button.setAttribute("id", uniqId);
-      button.addEventListener("click", onHumanAttack);
+      button.addEventListener("click", onHumanTurn);
       compGridContainer.appendChild(button);
     }
 
