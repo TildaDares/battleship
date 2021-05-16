@@ -1,8 +1,11 @@
 import Player from "./player";
+import ComputerAI from "./computerAI";
 
 const game = (() => {
   let human = Player(false);
-  let comp = Player(true);
+  let comp = ComputerAI();
+  let compLastMove;
+  let humanLastMove;
 
   const init = () => {
     generateHumanGrid();
@@ -96,7 +99,7 @@ const game = (() => {
 
   const restart = (event) => {
     human = Player(false);
-    comp = Player(true);
+    comp = ComputerAI();
     let resultsPar = document.querySelector(".results");
     resultsPar.textContent = "Your grid";
     document.querySelector("#comp-container").style.display = "block";
@@ -115,18 +118,35 @@ const game = (() => {
       document.querySelector("#comp-container").style.display = "none";
       document.querySelector(".btn-container").style.display = "flex";
       document.querySelector(".restart-btn").addEventListener("click", restart);
+      return true;
     }
+    return false;
   };
 
   const compAttack = () => {
-    const isAHit = comp.attack(human);
+    const isHit = comp.aiAttack(human);
     const shotCoord = [...human.board.shotCoords].slice(-1);
     const grid = document.querySelector("#hum" + shotCoord);
-    if (isAHit) {
+    if (isHit) {
       grid.classList.add("hit");
-      isWinner(true, human);
+      if (!isWinner(true, human)) {
+        onHumanShipSink([Number(shotCoord[0][0]), Number(shotCoord[0][1])]);
+      }
     } else {
       grid.classList.add("miss");
+    }
+
+    if (compLastMove) {
+      compLastMove.classList.remove("active");
+    }
+    grid.classList.add("active");
+    compLastMove = grid;
+  };
+
+  const onHumanShipSink = (squareCoord) => {
+    const ship = getAttackedShip(human, squareCoord);
+    if (ship.object.isSunk()) {
+      comp.enemyShipSunk(ship);
     }
   };
 
@@ -142,9 +162,16 @@ const game = (() => {
     } else {
       event.target.classList.add("miss");
     }
+
     if (comp.board.shotCoords.size === compShotCoords + 1) {
+      event.target.classList.add("active");
       compAttack();
     }
+
+    if (humanLastMove) {
+      humanLastMove.classList.remove("active");
+    }
+    humanLastMove = event.target;
   };
 
   const generateHumanGrid = () => {
