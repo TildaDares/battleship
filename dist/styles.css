@@ -6,6 +6,18 @@ button {
   background-color: transparent;
 }
 
+.turn {
+  display: flex;
+  justify-content: center;
+}
+
+.turn p {
+  background-color: #edf2f7;
+  padding: 20px;
+  width: fit-content;
+  font-size: 1.3rem;
+}
+
 .title {
   text-align: center;
   width: 100%;
